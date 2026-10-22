@@ -113,9 +113,21 @@ has been flat since. The order is a stored invariant of the configuration,
 enforced where it is written.
 
 The same subtraction puts the patched `k256` path at about 269,500 cycles a
-verification, so the ratio between the two backends is **2.5×** — and that
-269,500 is the figure our v0.3 measurements published, to within a fifth of a
-percent, on a different runtime and a different program.
+verification, so the ratio between the two backends is **2.5×**. Our v0.3
+measurements published 267,647 cycles for the same check, on a different
+runtime and a different program: within 0.7%.
+
+What the whole `Execute` costs on the fast backend, against the same cap:
+
+| M | execute cycles | share of the 10M gas cap |
+|---:|---:|---:|
+| 1 | 126,423 | 1.3% |
+| 5 | 565,037 | 5.7% |
+| 32 | 3,534,711 | 35.3% |
+
+M = 5 falls from 13.8% of a transaction to 5.7%, and M = 32 from 87.3% to
+35.3%. Every rule test passes on this backend too, refusals included:
+`OSTRAKON_BACKEND=fast cargo test --release -p ostrakon-host --test rules`.
 
 ## 3. What the accelerated `k256` fork is worth
 

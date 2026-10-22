@@ -65,3 +65,8 @@ selective disclosure, group-key renewal, vault deposit handling, any client,
 any deployment.
 
 Copyright Equilibrium. All rights reserved; no licence is granted for now.
+
+This repository is published so the figures in our RFP-005 bid can be checked,
+not as a release. The work the bid funds is open source: every component
+delivered under it is committed to MIT or Apache-2.0, and this code is
+relicensed to match on award.
