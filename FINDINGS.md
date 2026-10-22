@@ -163,6 +163,25 @@ quiet machine rather than a settled slope, but it has held across every build
 measured here: the signature work adds to the composed transaction rather
 than vanishing inside the privacy circuit.
 
+The same binary and the same inputs, on an Apple M5 Max with GPU proving:
+
+| M | prove (s) | inner receipt (bytes) |
+|---:|---:|---:|
+| 1 | 197.3 | 226,215 |
+| 5 | 228.9 | 226,343 |
+
+The receipts match the CPU run byte for byte, so both machines prove the same
+thing. The GPU takes the marginal cost from about 19 seconds an approval to
+about 8, and the fixed cost from 220 seconds to 197. It helps the part that
+grows with M, and barely touches the rest.
+
+Both witnesses carry an empty membership proof. The circuit reads the
+commitment-set digest out of that proof and never checks it against chain
+state, so a synthetic proof costs what a real one of the same depth costs —
+but depth zero is not a real depth. On a chain holding commitments the path
+is tens of levels, the circuit hashes once per level, and there are two
+private accounts here. These times do not include any of that.
+
 ## 5. The quorum is enforceable
 
 ```sh

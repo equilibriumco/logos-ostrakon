@@ -3,8 +3,9 @@
 //! The configuration lives in the actor state of a private account, so the
 //! chain stores a commitment and a validity proof and publishes neither the
 //! members, nor the threshold, nor the approvals. The quorum is still checked
-//! by the program, inside the proof, and the approved transfer spends the
-//! private account's own balance.
+//! by the program, inside the proof, and the approved transfer spends a
+//! private PDA bound to the program. Not the account's own balance: that
+//! layout is the one `bypass.rs` drains without any approvals.
 //!
 //! `cargo run --release -p ostrakon-host --features prove --bin private -- [M...]`
 //!
