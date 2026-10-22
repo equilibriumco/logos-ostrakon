@@ -1,0 +1,17 @@
+[package]
+name = "ostrakon-bip340"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "BIP-340 Schnorr verification on the zkVM's secp256k1 EC circuits: GLV decomposition, windowed NAF, a fixed-base table."
+
+[dependencies]
+# SHA-256 for the BIP-340 challenge tag. Patched to the accelerated fork in a
+# guest workspace, like every other hash in the tree.
+sha2 = { version = "0.10", default-features = false }
+
+# The EC circuits themselves. zkVM-only, so target-gated: a host build must
+# not see them. This is a release candidate, which is the reason the default
+# verification path is still the patched `k256`.
+[target.'cfg(all(target_os = "zkvm", target_vendor = "risc0"))'.dependencies]
+risc0-crypto = "0.1.0-rc.1"

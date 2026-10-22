@@ -1,0 +1,41 @@
+[package]
+name = "ostrakon-host"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Host-side harness: approval-verification cost against M, on the runtime the sequencer applies."
+
+[dependencies]
+ostrakon-core = { path = "../core" }
+ostrakon-methods = { path = "../methods" }
+lee.workspace = true
+lee_core = { workspace = true, features = ["host"] }
+borsh.workspace = true
+risc0-zkvm = { version = "=3.0.5", features = ["client"] }
+k256 = { version = "0.13.3", features = ["schnorr", "arithmetic", "std"] }
+anyhow = "1"
+
+[features]
+default = []
+# The privacy-preserving path composes the program's execution inside the
+# privacy circuit, which needs a prover even to be exercised.
+prove = ["lee/prove", "risc0-zkvm/prove"]
+
+[[bin]]
+name = "measure"
+path = "src/bin/measure.rs"
+
+[[bin]]
+name = "private"
+path = "src/bin/private.rs"
+required-features = ["prove"]
+
+[[bin]]
+name = "bypass"
+path = "src/bin/bypass.rs"
+required-features = ["prove"]
+
+[[bin]]
+name = "leak"
+path = "src/bin/leak.rs"
+required-features = ["prove"]

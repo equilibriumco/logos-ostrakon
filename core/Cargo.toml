@@ -1,0 +1,29 @@
+[package]
+name = "ostrakon-core"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "An M-of-N multisig actor for the Logos Execution Zone: state, digest and the message handler."
+
+[features]
+default = []
+# BIP-340 verification over our own GLV + wNAF loop on the secp256k1 EC
+# circuits, instead of the patched `k256`. Guest-only: the backend exists
+# only inside a zkVM.
+fast = ["dep:ostrakon-bip340"]
+# Measurement only: every signature is accepted without being checked, so the
+# cost of the program minus this is the cost of the cryptography. Never built
+# into anything that runs.
+plumbing = []
+
+[dependencies]
+lee_core.workspace = true
+
+borsh.workspace = true
+k256.workspace = true
+risc0-zkvm.workspace = true
+
+# The accelerated backend, which exists only inside a guest. Target-gated so a
+# host build of this crate never sees it.
+[target.'cfg(all(target_os = "zkvm", target_vendor = "risc0"))'.dependencies]
+ostrakon-bip340 = { path = "../bip340", optional = true }

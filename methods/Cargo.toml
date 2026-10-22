@@ -1,0 +1,15 @@
+[package]
+name = "ostrakon-methods"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "The built ostrakon guest ELF, embedded for the host."
+
+[dependencies]
+lee.workspace = true
+
+[build-dependencies]
+risc0-build.workspace = true
+
+[package.metadata.risc0]
+methods = ["guest", "guest-stock", "guest-fast", "guest-plumbing"]

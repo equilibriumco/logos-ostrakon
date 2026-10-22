@@ -1,0 +1,16 @@
+[workspace]
+resolver = "2"
+members = ["bip340", "core", "methods", "host"]
+# The guest cross-compiles to riscv32im-risc0-zkvm-elf with its own lockfile
+# and its own [patch.crates-io]: the RISC Zero accelerated k256 fork, without
+# which a single BIP-340 verification costs millions of cycles.
+exclude = ["methods/guest", "methods/guest-stock", "methods/guest-fast", "methods/guest-plumbing"]
+
+[workspace.dependencies]
+lee = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+lee_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+clock_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+borsh = { version = "1.5", features = ["derive"] }
+k256 = { version = "0.13.3", default-features = false, features = ["schnorr", "arithmetic"] }
+risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std"] }
+risc0-build = "3.0.5"

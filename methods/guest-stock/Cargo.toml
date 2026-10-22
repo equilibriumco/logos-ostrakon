@@ -1,0 +1,24 @@
+# The same guest, built WITHOUT the RISC Zero accelerated k256 fork: the
+# control that shows what the accelerator is worth.
+[workspace]
+
+[package]
+name = "ostrakon-guest-stock"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "ostrakon_stock"
+path = "src/bin/ostrakon_stock.rs"
+
+[dependencies]
+ostrakon-core = { path = "../../core" }
+lee_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std"] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+
