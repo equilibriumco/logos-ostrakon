@@ -14,3 +14,4 @@ borsh = { version = "1.5", features = ["derive"] }
 k256 = { version = "0.13.3", default-features = false, features = ["schnorr", "arithmetic"] }
 risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std"] }
 risc0-build = "3.0.5"
+

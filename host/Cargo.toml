@@ -36,6 +36,11 @@ path = "src/bin/bypass.rs"
 required-features = ["prove"]
 
 [[bin]]
+name = "settle"
+path = "src/bin/settle.rs"
+required-features = ["prove"]
+
+[[bin]]
 name = "leak"
 path = "src/bin/leak.rs"
 required-features = ["prove"]

@@ -29,6 +29,9 @@ RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin pri
 # the quorum is enforceable: two drain attempts, one refused
 RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin bypass
 
+# create, fund, execute — each validated and applied to chain state
+RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin settle
+
 # ... with real proving, which takes minutes per M
 RISC0_DEV_MODE=0 cargo run --release -p ostrakon-host --features prove --bin private -- 1
 ```
@@ -44,7 +47,7 @@ core/                the whole program: state, digest, BIP-340 quorum, handler
 methods/guest/       the actor entrypoint, one line, accelerated k256
 methods/guest-stock/ the same guest without the accelerator, as a control
 host/                the harness: rule tests, cycles against M, the private
-                     path, and the drain attempts
+                     path, the drain attempts, and the settled lifecycle
 ```
 
 `core` depends on no runtime beyond `lee_core`'s types and is tested on the

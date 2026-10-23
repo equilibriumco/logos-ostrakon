@@ -248,7 +248,59 @@ What remains, with the window:
   mutably. An undisclosed claim needs an immutable deployment, which is a
   deployment choice and is not exercised here.
 
-## 7. The rules, one test each
+## 7. Settled, not only proved
+
+```sh
+RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin settle
+```
+
+Everything above proves transactions. This settles three of them, which is a
+different claim: each is built as a real `PrivacyPreservingTransaction`, then
+**validated** — the privacy circuit's proof verified against its image id, the
+nullifiers checked against the spent set, the commitments checked for
+membership — and **applied** to chain state. That pair of calls is what a
+sequencer makes when it puts a transaction in a block.
+
+1. **Create** — the configuration is written into a private account.
+2. **Fund** — a public account pays the vault, a private PDA of this program.
+3. **Execute** — a 5-of-5 quorum spends the vault, and the payout lands.
+
+Nothing is seeded. Each transaction proves against the state the previous one
+settled, so the membership proofs are real paths into a commitment tree the
+earlier transactions built. The execute, submitted a second time, is refused:
+its nullifiers are spent. That is the settled chain's replay protection,
+independent of the program's own executed-digest record.
+
+With real proving, on the 20 CPU cores:
+
+| | prove (s) | transaction (bytes) | validated and applied (s) |
+|---|---:|---:|---:|
+| create | 152.7 | 226,341 | 0.012 |
+| fund | 121.4 | 226,797 | 0.011 |
+| execute | 310.8 | 229,559 | 0.011 |
+
+These are the figures §4's caveat asks for. There the membership proofs are
+empty, so the circuit hashes no path and the times understate a real chain;
+here every proof is a real path into a tree the earlier transactions built,
+and the execute carries two of them. The tree is three commitments deep, so
+this is the floor rather than the full cost — a chain holding millions would
+add a few dozen hashes per account — but it is no longer zero.
+
+Validation is the cheap half: about eleven milliseconds to verify the proof,
+check the nullifiers and apply the diff, against minutes to produce it. The
+asymmetry is the point of the design.
+
+There is no v0.4 testnet, so there is no public transaction to link. A link
+lets a reviewer look; a command that re-runs the settlement lets them check.
+Until a testnet exists this offers the second.
+
+One thing worth recording, because it cost an afternoon: a private account's
+successor takes the nonce its predecessor's transition hands on
+(`PrivateWitness::transition()`), so the plaintext alone never determines the
+commitment. Every step here asserts that the commitment the chain recorded is
+the one our model of the post-state produces, which is what caught it.
+
+## 8. The rules, one test each
 
 ```sh
 cargo test --release -p ostrakon-host --test rules
