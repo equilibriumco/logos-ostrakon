@@ -32,8 +32,10 @@ RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin byp
 # create, fund, execute — each validated and applied to chain state
 RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin settle
 
-# ... with real proving, which takes minutes per M
-RISC0_DEV_MODE=0 cargo run --release -p ostrakon-host --features prove --bin private -- 1
+# the same two with real proving, which takes minutes each. Every timing in
+# FINDINGS.md comes from these, not from the dev-mode runs above.
+RISC0_DEV_MODE=0 cargo run --release -p ostrakon-host --features prove --bin private -- 1 5
+RISC0_DEV_MODE=0 cargo run --release -p ostrakon-host --features prove --bin settle
 ```
 
 Measured results are in [FINDINGS.md](FINDINGS.md): about 272,000 cycles per
