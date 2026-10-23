@@ -45,25 +45,32 @@ factor of 20 between the accelerated and stock builds.
 ## Against a real sequencer
 
 Everything above runs the program through the state machine in process.
-`testnet/` runs it against the stack a chain actually is — Bedrock producing
-blocks underneath, a sequencer, an indexer and a wallet — and deploys the
+`testnet/` runs it against the stack a chain actually is: Bedrock producing
+blocks underneath, a sequencer, an indexer and a wallet. It deploys the
 multisig there, immutably, which is what an undisclosed image claim needs.
+None of the figures above come from it, and nothing else here depends on it.
 
 ```sh
 cd testnet && ./run.sh
 ```
 
-Nothing in LEZ is modified: its test fixtures come in as a pinned git
-dependency, and its own resolver builds the Bedrock node. The script works out
-the rest, because four things sit between a clean clone and a running stack
-and none of them are ours — the wallet links PC/SC for Keycard, Nix's
-pkg-config wrapper reads a target-suffixed variable, that libpcsclite wants a
-newer glibc than the toolchain links against, and a fresh resolve picks a
-`zip` that `utoipa-swagger-ui` cannot build against. `run.sh` documents each
-one where it handles it.
+Needs `cargo`, Docker and, on Linux, `nix`. Podman is not enough: LEZ's
+fixtures publish Bedrock's port as host port 0, meaning "pick a free one",
+which Podman rejects as out of range.
 
-The first run compiles the Bedrock L1 from source in Docker, because no
-published release matches the revision LEZ pins. That takes minutes, once.
+Nothing in LEZ is modified: its test fixtures come in as a pinned git
+dependency, and its own resolver builds the Bedrock node. `run.sh` supplies
+what differs by platform and documents each piece where it handles it. On
+macOS there is nothing to supply, since PC/SC is a system framework and the
+binary runs as built. On Linux the wallet's libpcsclite comes out of nixpkgs,
+which brings a target-suffixed `PKG_CONFIG_PATH` variable that Nix's
+pkg-config wrapper reads, and a glibc newer than the toolchain links against,
+so the binary runs under that loader.
+
+The first run compiles the Bedrock L1 from source in a container, because no
+published release matches the revision LEZ pins. That takes minutes, once. The
+node it produces belongs to the LEZ revision this workspace pins, so a LEZ
+clone at another revision has a different one and the fixtures reject it.
 
 `testnet/` is its own workspace on purpose: it reaches for LEZ's test-support
 crates, which are not a published API, and nothing in the main workspace
