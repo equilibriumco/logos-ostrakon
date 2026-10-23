@@ -267,9 +267,11 @@ sequencer makes when it puts a transaction in a block.
 
 Nothing is seeded. Each transaction proves against the state the previous one
 settled, so the membership proofs are real paths into a commitment tree the
-earlier transactions built. The execute, submitted a second time, is refused:
-its nullifiers are spent. That is the settled chain's replay protection,
-independent of the program's own executed-digest record.
+earlier transactions built. The execute, submitted a second time, is refused
+with `Commitment already seen`: validation rejects it before application, so
+the nullifier check never runs, though it would refuse it too. Either way the
+chain's own replay protection holds, independent of the program's
+executed-digest record.
 
 With real proving, on the 20 CPU cores:
 
