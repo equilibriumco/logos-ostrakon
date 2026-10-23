@@ -29,6 +29,9 @@ RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin pri
 # the quorum is enforceable: two drain attempts, one refused
 RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin bypass
 
+# every boundary crossing a private execution publishes
+RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin leak
+
 # create, fund, execute — each validated and applied to chain state
 RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin settle
 
@@ -80,8 +83,13 @@ should depend on them.
 
 ```
 core/                the whole program: state, digest, BIP-340 quorum, handler
+bip340/              BIP-340 over the zkVM's secp256k1 circuits, guest-only
 methods/guest/       the actor entrypoint, one line, accelerated k256
 methods/guest-stock/ the same guest without the accelerator, as a control
+methods/guest-fast/  the same guest on the bip340 backend
+methods/guest-plumbing/
+                     the fast guest with signatures accepted unchecked, so
+                     the difference is what the cryptography costs
 host/                the harness: rule tests, cycles against M, the private
                      path, the drain attempts, and the settled lifecycle
 testnet/             the same program against a real sequencer (own workspace)
