@@ -1,0 +1,25 @@
+# Its own workspace on purpose. This crate reaches for LEZ's test-support
+# crates to stand up a real sequencer, and those are not a published API —
+# nothing in the main workspace should depend on them.
+[workspace]
+
+[package]
+name = "ostrakon-testnet"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+ostrakon-core = { path = "../core" }
+ostrakon-methods = { path = "../methods" }
+
+integration_tests = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+test_fixtures = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+wallet = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+lee = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+lee_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f", features = ["host"] }
+program_loader_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", rev = "9f004c6b90142b3de450c64e655cf699724b3e6f" }
+
+borsh = { version = "1.5", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"

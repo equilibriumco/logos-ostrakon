@@ -21,9 +21,10 @@
 //! the nonce its predecessor's transition hands on, which is why that check
 //! is worth making rather than assuming.
 //!
-//! Finally the execute is submitted again, and the chain refuses it: its
-//! nullifiers are spent. That is replay protection from the settled chain,
-//! independent of the program's own executed-digest record.
+//! Finally the execute is submitted again and is refused with `Commitment
+//! already seen`: validation rejects it before application, so the nullifier
+//! check never runs, though it would refuse it too. Either way the refusal is
+//! the chain's, independent of the program's executed-digest record.
 //!
 //! ```sh
 //! RISC0_DEV_MODE=1 cargo run --release -p ostrakon-host --features prove --bin settle

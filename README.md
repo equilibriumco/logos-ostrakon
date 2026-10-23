@@ -40,6 +40,33 @@ Measured results are in [FINDINGS.md](FINDINGS.md): about 272,000 cycles per
 approval, M = 5 at 13.8% of a transaction, M = 32 still fitting one, and a
 factor of 20 between the accelerated and stock builds.
 
+## Against a real sequencer
+
+Everything above runs the program through the state machine in process.
+`testnet/` runs it against the stack a chain actually is — Bedrock producing
+blocks underneath, a sequencer, an indexer and a wallet — and deploys the
+multisig there, immutably, which is what an undisclosed image claim needs.
+
+```sh
+cd testnet && ./run.sh
+```
+
+Nothing in LEZ is modified: its test fixtures come in as a pinned git
+dependency, and its own resolver builds the Bedrock node. The script works out
+the rest, because four things sit between a clean clone and a running stack
+and none of them are ours — the wallet links PC/SC for Keycard, Nix's
+pkg-config wrapper reads a target-suffixed variable, that libpcsclite wants a
+newer glibc than the toolchain links against, and a fresh resolve picks a
+`zip` that `utoipa-swagger-ui` cannot build against. `run.sh` documents each
+one where it handles it.
+
+The first run compiles the Bedrock L1 from source in Docker, because no
+published release matches the revision LEZ pins. That takes minutes, once.
+
+`testnet/` is its own workspace on purpose: it reaches for LEZ's test-support
+crates, which are not a published API, and nothing in the main workspace
+should depend on them.
+
 ## Layout
 
 ```
@@ -48,6 +75,7 @@ methods/guest/       the actor entrypoint, one line, accelerated k256
 methods/guest-stock/ the same guest without the accelerator, as a control
 host/                the harness: rule tests, cycles against M, the private
                      path, the drain attempts, and the settled lifecycle
+testnet/             the same program against a real sequencer (own workspace)
 ```
 
 `core` depends on no runtime beyond `lee_core`'s types and is tested on the
